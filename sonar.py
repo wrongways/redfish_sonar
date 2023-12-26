@@ -1,11 +1,12 @@
 import requests
 import json
+import urllib3
 
 bmc_name_pattern = 'jura*-bmc'
 redfish_root = '/redfish/v1'
 
 def bmc_iterator():
-    min_bmc_num = 1
+    min_bmc_num = 10
     max_bmc_num = 500
 
     for bmc_num in range(min_bmc_num, max_bmc_num + 1):
@@ -16,6 +17,10 @@ def read_credentials(credentials_file):
     with open(credentials_file) as f:
         return [tuple(user_pass.split()) for user_pass in f.readlines()]
 
+
+# main
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 bmcs = {}
 
 for bmc in bmc_iterator():
@@ -25,13 +30,15 @@ for bmc in bmc_iterator():
     url = f'https://{bmc}{redfish_root}'
     print(f'Connecting to {url}')
     try:
-        resp = requests.get(url)
+        resp = requests.get(url, verify=False)
         has_redfish = resp.status_code == requests.codes.ok
         bmc_info['redfish'] = has_redfish
         print(f"{bmc} redfish: {has_redfish}")
     except requests.exceptions.ConnectionError as e:
         print(f">>>>  No such bmc: {bmc}")
         continue
+    except InsecureRequestWarning:
+        pass
 
     if has_redfish and bmc_info.get('user_pass') is None:
         for user_pass in read_credentials('credentials.txt'):
