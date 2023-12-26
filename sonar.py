@@ -1,7 +1,7 @@
 import requests
 import json
 
-bmc_name_pattern = 'pise*-bmc'
+bmc_name_pattern = 'jura*-bmc'
 redfish_root = '/redfish/v1'
 
 def bmc_iterator():
