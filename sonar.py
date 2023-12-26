@@ -36,9 +36,8 @@ for bmc in bmc_iterator():
         print(f"{bmc} redfish: {has_redfish}")
     except requests.exceptions.ConnectionError as e:
         print(f">>>>  No such bmc: {bmc}")
+        print(e)
         continue
-    except InsecureRequestWarning:
-        pass
 
     if has_redfish and bmc_info.get('user_pass') is None:
         for user_pass in read_credentials('credentials.txt'):
@@ -58,7 +57,7 @@ print(f"{'BMC':>10} | Has redfish | Username/password | Chassis")
 print(f'{"=" * 11}+{"=" * 13}+{"=" * 19}+{"=" * 8}')
 for bmc, info in bmcs.items():
     user_pass = '/'.join(info.get('user_pass', ['** UNKNOWN **']))
-    print(f"{bmc:>10} | {bool(info.get('redfish'):11)} | {user_pass} | {info.get('chassis')}")
+    print(f"{bmc:>10} | {bool(info.get('redfish')):11} | {user_pass} | {info.get('chassis')}")
 
 with open('bmc_info.json', 'w') as f:
     json.dump(bmcs, f, indent=3, sort_keys=True)
