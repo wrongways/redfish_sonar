@@ -23,9 +23,13 @@ for bmc in bmc_iterator():
 
     # Determine if there's a redfish server on bmc
     url = 'https://' + bmc + redfish_root
-    resp = requests.get(url)
-    has_redfish = resp.status_code == requests.codes.ok
-    bmc_info['redfish'] = has_redfish
+    try:
+        resp = requests.get(url)
+        has_redfish = resp.status_code == requests.codes.ok
+        bmc_info['redfish'] = has_redfish
+        print(f"{bmc} redfish: {has_redfish}")
+    except requests.exceptions.ConnectionError as e:
+        print(f">>>>  No such bmc: {bmc}")
 
     if has_redfish and bmc_info.get('user_pass') is None:
         for user_pass in read_credentials('credentials.txt'):
