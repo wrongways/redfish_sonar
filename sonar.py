@@ -34,9 +34,7 @@ for bmc in bmc_iterator():
         has_redfish = resp.status_code == requests.codes.ok
         bmc_info['redfish'] = has_redfish
         print(f"{bmc} redfish: {has_redfish}")
-    except requests.exceptions.ConnectionError as e:
-        print(f">>>>  No such bmc: {bmc}")
-        print(e)
+    except requests.exceptions.ConnectionError:
         continue
 
     if has_redfish and bmc_info.get('user_pass') is None:
@@ -50,7 +48,10 @@ for bmc in bmc_iterator():
                 bmc_info['chassis'] = chassis
                 bmcs[bmc] = bmc_info
                 break
-            print(f"HTTP Status: {resp.status_code}")
+            elif resp.status_code == requests.codes.unauthorized:
+                continue
+            else:
+                print(f"HTTP Status: {resp.status_code}")
 
 
 print(f"{'BMC':>11} | Has redfish | Username/password | Chassis")
