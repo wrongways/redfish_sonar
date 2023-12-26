@@ -48,7 +48,8 @@ for bmc in bmc_iterator():
 print(f"{'BMC':>10} Has redfish Username/password")
 print('=' * 38)
 for bmc, info in bmcs.items():
-    print(f"{bmc:>10} {info.get('redfish'):11} {"/".join(info.get('user_pass', ['** UNKNOWN **']))}")
+    user_pass = '/'.join(info.get('user_pass', ['** UNKNOWN **']))
+    print(f"{bmc:>10} {info.get('redfish'):11} {user_pass}")
 
 with open('bmc_info.json', 'w') as f:
     json.dump(bmcs, f, indent=3, sort_keys=True)
