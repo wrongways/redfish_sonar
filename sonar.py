@@ -30,7 +30,7 @@ for bmc in bmc_iterator():
         print(f"{bmc} redfish: {has_redfish}")
     except requests.exceptions.ConnectionError as e:
         print(f">>>>  No such bmc: {bmc}")
-        break
+        continue
 
     if has_redfish and bmc_info.get('user_pass') is None:
         for user_pass in read_credentials('credentials.txt'):
