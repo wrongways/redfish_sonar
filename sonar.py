@@ -47,6 +47,8 @@ for bmc in bmc_iterator():
             if resp.status_code == requests.codes.ok:
                 bmc_info['user_pass'] = user_pass
                 print(json.dumps(resp.json(), indent=3, sort_keys=True))
+                chassis = [c.get('@odata.id') for c in resp.json().get('Members', {}) if c]
+                bmc_info['chassis'] = chassis
                 bmcs[bmc] = bmc_info
                 break
             print(f"HTTP Status: {resp.status_code}")
