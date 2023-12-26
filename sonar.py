@@ -57,7 +57,8 @@ print(f"{'BMC':>11} | Has redfish | Username/password | Chassis")
 print(f'{"=" * 12}+{"=" * 13}+{"=" * 19}+{"=" * 8}')
 for bmc, info in bmcs.items():
     user_pass = '/'.join(info.get('user_pass', ['** UNKNOWN **']))
-    print(f"{bmc:>10} | {info['redfish']:10} | {user_pass:16} | {info.get('chassis')}")
+    chassis = [c.replace('/redfish/v1/Chassis/', '') for c in info.get('chassis')]
+    print(f"{bmc:>10} | {info['redfish']:10} | {user_pass:16} | {', '.join(chassis)}")
 
 with open('bmc_info.json', 'w') as f:
     json.dump(bmcs, f, indent=3, sort_keys=True)
