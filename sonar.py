@@ -22,7 +22,8 @@ for bmc in bmc_iterator():
     bmc_info = bmcs.get(bmc, {})
 
     # Determine if there's a redfish server on bmc
-    url = 'https://' + bmc + redfish_root
+    url = f'https://{bmc}{redfish_root}'
+    print(f'Connecting to {url}')
     try:
         resp = requests.get(url)
         has_redfish = resp.status_code == requests.codes.ok
