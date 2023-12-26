@@ -43,7 +43,7 @@ for bmc in bmc_iterator():
     if has_redfish and bmc_info.get('user_pass') is None:
         for user_pass in read_credentials('credentials.txt'):
             chassis_url = url + '/Chassis'
-            resp = requests.get(chassis_url, auth=user_pass)
+            resp = requests.get(chassis_url, auth=user_pass, verify=False)
             if resp.status_code == requests.codes.ok:
                 bmc_info['user_pass'] = user_pass
                 print(json.dumps(resp.json(), indent=3, sort_keys=True))
