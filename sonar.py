@@ -5,12 +5,13 @@ import urllib3
 bmc_name_pattern = 'jura*-bmc'
 redfish_root = '/redfish/v1'
 
-def bmc_iterator():
-    min_bmc_num = 10
-    max_bmc_num = 500
 
-    for bmc_num in range(min_bmc_num, max_bmc_num + 1):
-        yield bmc_name_pattern.replace('*', f'{bmc_num:03}')
+def bmc_iterator(padding=1):
+    min_bmc_id = 10
+    max_bmc_id = 500
+
+    for bmc_id in range(min_bmc_id, max_bmc_id + 1):
+        yield bmc_name_pattern.replace('*', f'{bmc_id:0{padding}}')
 
 
 def read_credentials(credentials_file):
@@ -23,7 +24,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 bmcs = {}
 
-for bmc in bmc_iterator():
+for bmc in bmc_iterator(padding=3):
     bmc_info = bmcs.get(bmc, {})
 
     # Determine if there's a redfish server on bmc
